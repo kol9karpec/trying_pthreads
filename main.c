@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define THREADS_COUNT 3
 
@@ -23,7 +24,7 @@ int getid(void) {
 
 void* getid_loop(void* arg) {
 	while(is_continue) {
-		printf("id: %d\n",getid());
+		printf("Thread: %d id: %d\n",(int)((intptr_t)arg),getid());
 		sleep(1);
 	}
 
@@ -50,7 +51,7 @@ int main(int argc, char * const argv[]) {
 	signal(SIGINT,sigint_handler);
 
 	for(i = 0;i < THREADS_COUNT;i++) {
-		pthread_create(&threads[i],NULL,getid_loop,NULL);
+			pthread_create(&threads[i],NULL,getid_loop,(void*)((intptr_t)(i)));
 	}
 	while(1) {}
 
